@@ -20,6 +20,7 @@ async def check_project_name_duplicate(project_name: str, session: AsyncSession)
         raise HTTPException(status_code=400, detail='Проект с таким именем уже существует!')
 
 
+
 async def check_project_was_invested(charity_project: CharityProject):
     if charity_project.invested_amount > 0:
         raise HTTPException(status_code=400, detail='В проект были внесены средства, не подлежит удалению!')
@@ -27,12 +28,14 @@ async def check_project_was_invested(charity_project: CharityProject):
 
 async def check_project_was_closed(charity_project: CharityProject):
     if charity_project.fully_invested is True:
-        raise HTTPException(status_code=400, detail='Нельзя редактировать закрытый проект')
+        raise HTTPException(status_code=400, detail='Закрытый проект нельзя редактировать!')
     
 
 async def check_is_possible_to_change_amount(
     charity_project: CharityProject, obj_in: CharityProjectUpdate):
     update_data = obj_in.dict(exclude_unset=True)
+    print(update_data)
+    print('full_amount' in update_data)
     if 'full_amount' in update_data:
-        if update_data['full_amount'] < charity_project.full_amount:
+        if update_data['full_amount'] < charity_project.invested_amount or update_data['full_amount'] is None:
             raise HTTPException(status_code=400, detail='Нельзя установить требуемую сумму меньше уже вложенной')

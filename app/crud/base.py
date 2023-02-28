@@ -30,8 +30,10 @@ class CRUDBase:
         return db_obj
 
     async def update(self, db_obj, obj_in, session: AsyncSession):
+        print(obj_in)
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in.dict(exclude_unset=True)
+        print(update_data)
 
         for field in obj_data:
             if field in update_data:

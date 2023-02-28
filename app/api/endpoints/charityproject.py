@@ -41,7 +41,6 @@ async def create_charity_project(
 @router.patch(
     '/charity_project/{project_id}', 
     response_model=CharityProjectDB,
-    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
     description=('Закрытый проект нельзя редактировать, также нельзя ' 
                  'установить требуемую сумму меньше уже вложенной.'))
@@ -50,17 +49,19 @@ async def update_chariry_project(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    """Только для суперюзеров.""" 
+    """Только для суперюзеров."""
+    print(obj_in) 
     charity_project = await check_project_exists(project_id, session)
     await check_project_was_closed(charity_project)
     await check_is_possible_to_change_amount(charity_project, obj_in)
+    if obj_in.name:
+        await check_project_name_duplicate(obj_in.name, session)
     charity_project = await charity_project_crud.update(charity_project, obj_in, session)
     return charity_project
 
 @router.delete(
     '/charity_project/{project_id}', 
     response_model=CharityProjectDB,
-    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
     description=('Удаляет проект. Нельзя удалить проект, в который уже ' 
                  'были инвестированы средства, его можно только закрыть.')
