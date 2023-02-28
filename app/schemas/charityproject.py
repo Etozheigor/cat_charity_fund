@@ -14,10 +14,11 @@ class CharityProjectCreate(BaseModel):
         extra = Extra.forbid
 
 
-class CharityProjectUpdate(BaseModel):
+class CharityProjectUpdate(CharityProjectCreate):
     name: Optional[str]
     description: Optional[str]
     full_amount: Optional[PositiveInt]
+
 
     @validator('name')
     def validate_name(cls, value: str):
@@ -34,10 +35,9 @@ class CharityProjectUpdate(BaseModel):
     @validator('full_amount')
     def validate_full_amount(cls, value: str):
         if value is None or value == '':
-            raise ValueError('Недопустимое описание')
+            raise ValueError('Недопустимая сумма')
         return value
     
-
 
 class CharityProjectDB(CharityProjectCreate):
     id: int
