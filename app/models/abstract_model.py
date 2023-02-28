@@ -1,11 +1,12 @@
 from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from app.core.db import Base
+from datetime import datetime
 
 
 class AbstractModel:
     full_amount = Column(Integer)
-    invested_amount = Column(Integer)
-    fully_invested = Column(Boolean)
-    create_date = Column(DateTime)
+    invested_amount = Column(Integer, default=0)
+    fully_invested = Column(Boolean, default=False)
+    create_date = Column(DateTime, default=datetime.now)
     close_date = Column(DateTime)

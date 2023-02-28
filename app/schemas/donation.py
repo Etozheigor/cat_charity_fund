@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, validator, root_validator, Extra
 from typing import Optional
 from datetime import datetime
+from pydantic import PositiveInt
 
 
 
@@ -24,8 +25,8 @@ class DonationDB(DonationCreate):
     id: int
     create_date: datetime = datetime.now()
     user_id: int
-    invested_amount : Optional[int]
-    fully_invested : Optional[bool]
+    invested_amount: Optional[int]
+    fully_invested: Optional[bool]
     close_date: Optional[datetime]
 
     class Config:
