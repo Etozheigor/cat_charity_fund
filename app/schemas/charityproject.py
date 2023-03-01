@@ -1,8 +1,7 @@
-from pydantic import BaseModel, Field, validator, root_validator, Extra
-from typing import Optional
 from datetime import datetime
-from pydantic import PositiveInt
+from typing import Optional
 
+from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 
 class CharityProjectCreate(BaseModel):
@@ -19,25 +18,24 @@ class CharityProjectUpdate(CharityProjectCreate):
     description: Optional[str]
     full_amount: Optional[PositiveInt]
 
-
     @validator('name')
     def validate_name(cls, value: str):
         if value is None or value == '' or value == ' ':
             raise ValueError('Недопустимое имя')
         return value
-    
+
     @validator('description')
     def validate_description(cls, value: str):
         if value is None or value == '' or value == ' ':
             raise ValueError('Недопустимое описание')
         return value
-    
+
     @validator('full_amount')
     def validate_full_amount(cls, value: str):
         if value is None or value == '':
             raise ValueError('Недопустимая сумма')
         return value
-    
+
 
 class CharityProjectDB(CharityProjectCreate):
     id: int
@@ -48,7 +46,3 @@ class CharityProjectDB(CharityProjectCreate):
 
     class Config:
         orm_mode = True
- 
-
-
-

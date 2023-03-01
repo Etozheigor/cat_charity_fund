@@ -1,14 +1,17 @@
-from fastapi import APIRouter, Depends
-from app.core.user import current_superuser, current_user
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.core.db import get_async_session
-from app.schemas.donation import DonationCreate, DonationDB, UserDonation
+from app.core.user import current_superuser, current_user
 from app.crud.donation import donation_crud
 from app.models.user import User
+from app.schemas.donation import DonationCreate, DonationDB, UserDonation
 from app.services.investing_process import investing_process
 
 router = APIRouter()
+
 
 @router.get(
     '/donation/',
@@ -21,6 +24,7 @@ async def get_all_donations(session: AsyncSession = Depends(get_async_session)):
     """Только для суперюзеров."""
     all_donations = await donation_crud.get_multi(session)
     return all_donations
+
 
 @router.post(
     '/donation/',
@@ -37,6 +41,7 @@ async def create_donation(
     await investing_process(new_donation, session)
     return new_donation
 
+
 @router.get(
     '/donation/my/',
     response_model=List[UserDonation],
@@ -45,6 +50,7 @@ async def create_donation(
 )
 async def get_user_donations(
     session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_user)):
+    user: User = Depends(current_user)
+):
     user_donations = await donation_crud.get_user_donations(session=session, user=user)
     return user_donations

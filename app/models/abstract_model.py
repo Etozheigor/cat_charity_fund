@@ -1,10 +1,10 @@
-from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime
-from sqlalchemy.orm import relationship
-from app.core.db import Base
 from datetime import datetime
+
+from sqlalchemy import Boolean, Column, DateTime, Integer
 
 
 class AbstractModel:
+    """Абстрактная модель, для наследования классов проекта и доната"""
     full_amount = Column(Integer)
     invested_amount = Column(Integer, default=0)
     fully_invested = Column(Boolean, default=False)

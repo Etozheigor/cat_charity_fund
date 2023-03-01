@@ -1,8 +1,7 @@
-from pydantic import BaseModel, Field, validator, root_validator, Extra
-from typing import Optional
 from datetime import datetime
-from pydantic import PositiveInt
+from typing import Optional
 
+from pydantic import BaseModel, Extra, Field
 
 
 class DonationCreate(BaseModel):
@@ -31,4 +30,3 @@ class DonationDB(DonationCreate):
 
     class Config:
         orm_mode = True
- 
