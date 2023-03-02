@@ -11,15 +11,17 @@ from app.api.validators import (check_is_possible_to_change_amount,
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charityproject import charity_project_crud
+from app.models import Donation
 from app.schemas.charityproject import (CharityProjectCreate, CharityProjectDB,
                                         CharityProjectUpdate)
 from app.services.investing_process import investing_process
+
 
 router = APIRouter()
 
 
 @router.get(
-    '/charity_project/',
+    '/',
     response_model=List[CharityProjectDB],
     response_model_exclude_none=True,
     description='Получает список всех проектов'
@@ -30,7 +32,7 @@ async def get_all_charity_projects(session: AsyncSession = Depends(get_async_ses
 
 
 @router.post(
-    '/charity_project/',
+    '/',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
     description='Создает благотворительный проект.',
@@ -43,12 +45,12 @@ async def create_charity_project(
     """Только для суперюзеров."""
     await check_project_name_duplicate(charity_project.name, session)
     new_charity_project = await charity_project_crud.create(charity_project, session)
-    await investing_process(new_charity_project, session)
+    await investing_process(new_charity_project, Donation, session)
     return new_charity_project
 
 
 @router.patch(
-    '/charity_project/{project_id}',
+    '/{project_id}',
     response_model=CharityProjectDB,
     dependencies=[Depends(current_superuser)],
     description=('Закрытый проект нельзя редактировать, также нельзя '
@@ -59,7 +61,6 @@ async def update_chariry_project(
     session: AsyncSession = Depends(get_async_session),
 ):
     """Только для суперюзеров."""
-    print(obj_in)
     charity_project = await check_project_exists(project_id, session)
     await check_project_was_closed(charity_project)
     await check_is_possible_to_change_amount(charity_project, obj_in)
@@ -70,7 +71,7 @@ async def update_chariry_project(
 
 
 @router.delete(
-    '/charity_project/{project_id}',
+    '/{project_id}',
     response_model=CharityProjectDB,
     dependencies=[Depends(current_superuser)],
     description=('Удаляет проект. Нельзя удалить проект, в который уже '

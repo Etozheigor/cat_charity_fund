@@ -31,7 +31,7 @@ async def check_project_was_invested(charity_project: CharityProject):
 
 async def check_project_was_closed(charity_project: CharityProject):
     """Проверка, закрыт ли проект."""
-    if charity_project.fully_invested is True:
+    if charity_project.fully_invested:
         raise HTTPException(status_code=400, detail='Закрытый проект нельзя редактировать!')
 
 

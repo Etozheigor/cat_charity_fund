@@ -1,4 +1,5 @@
 # app/core/user.py
+import logging
 from typing import Optional, Union
 
 from fastapi import Depends, Request
@@ -52,7 +53,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_register(
             self, user: User, request: Optional[Request] = None
     ):
-        print(f'Пользователь {user.email} зарегистрирован.')
+        logging.info('Новый пользователь создан')
+        pass
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
